@@ -1,0 +1,83 @@
+# WhatsApp Go SDK
+
+## .gitignore
+
+# Binaries
+dump_gpt.sh
+\*.exe
+\*.exe\~
+\*.dll
+\*.so
+\*.dylib
+\*.test
+
+# Output of the go build command
+
+/build/
+/bin/
+/dist/
+
+# Go workspace file
+
+\*.code-workspace
+
+# Logs
+
+\*.log
+
+# Dependency directories (vendor/)
+
+vendor/
+
+# IDEs and editors
+
+.idea/
+.vscode/
+\*.swp
+\*\~
+
+# OS generated files
+
+.DS\_Store
+Thumbs.db
+
+# Environment and configuration
+
+.env
+.env.\*
+config.yaml
+config.yml
+config.json
+
+# Test data and fixtures
+
+/testdata/*.json
+/testdata/*.yaml
+/testdata/*.yml
+/testdata/*.log
+
+# Temporary files
+
+/tmp/
+\*.tmp
+\*.bak
+\*.old
+
+# Coverage files
+
+\*.out
+coverage.txt
+
+# Build artifacts
+
+go.sum
+\*.a
+
+# OCI Vault and secrets backup
+
+secrets.backup
+
+# Ignore local dev tokens and secrets
+
+\*.token
+\*.secret
