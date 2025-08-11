@@ -15,42 +15,42 @@ func buildURL(base, version string, parts ...string) string {
 	return u.String()
 }
 
-// MessagesEndpoint returns the full URL for POST /{Version}/{Phone-Number-ID}/messages
+// MessagesEndpoint returns the full URL for POST /{Version}/{Phone-Number-ID}/messages.
 func MessagesEndpoint(base, version, phoneNumberID string) string {
 	return buildURL(base, version, phoneNumberID, "messages")
 }
 
-// PhoneNumbersListEndpoint returns GET /{Version}/{WABA-ID}/phone_numbers
+// PhoneNumbersListEndpoint returns the full URL for GET /{Version}/{WABA-ID}/phone_numbers.
 func PhoneNumbersListEndpoint(base, version, wabaID string) string {
 	return buildURL(base, version, wabaID, "phone_numbers")
 }
 
-// PhoneNumberGetEndpoint returns GET /{Version}/{Phone-Number-ID}
+// PhoneNumberGetEndpoint returns the full URL for GET /{Version}/{Phone-Number-ID}.
 func PhoneNumberGetEndpoint(base, version, phoneNumberID string) string {
 	return buildURL(base, version, phoneNumberID)
 }
 
-// RegisterEndpoint Registration endpoints
+// RegisterEndpoint returns the full URL for POST /{Version}/{Phone-Number-ID}/register.
 func RegisterEndpoint(base, version, phoneNumberID string) string {
 	return buildURL(base, version, phoneNumberID, "register")
 }
 
-// DeregisterEndpoint DeregisterEndpoint
+// DeregisterEndpoint returns the full URL for POST /{Version}/{Phone-Number-ID}/deregister.
 func DeregisterEndpoint(base, version, phoneNumberID string) string {
 	return buildURL(base, version, phoneNumberID, "deregister")
 }
 
-// RequestCodeEndpoint RequestCodeEndpoint
+// RequestCodeEndpoint returns the full URL for POST /{Version}/{Phone-Number-ID}/request_code.
 func RequestCodeEndpoint(base, version, phoneNumberID string) string {
 	return buildURL(base, version, phoneNumberID, "request_code")
 }
 
-// VerifyCodeEndpoint VerifyCodeEndpoint
+// VerifyCodeEndpoint returns the full URL for POST /{Version}/{Phone-Number-ID}/verify_code.
 func VerifyCodeEndpoint(base, version, phoneNumberID string) string {
 	return buildURL(base, version, phoneNumberID, "verify_code")
 }
 
-// TwoFactorEndpoint Two-factor (2FA) uses POST /{Version}/{Phone-Number-ID} with fields.
+// TwoFactorEndpoint returns the full URL for POST /{Version}/{Phone-Number-ID} used for two-factor (2FA) requests.
 func TwoFactorEndpoint(base, version, phoneNumberID string) string {
 	return buildURL(base, version, phoneNumberID)
 }
