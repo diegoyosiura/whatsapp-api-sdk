@@ -19,13 +19,16 @@ type PhoneAPI struct {
 	baseURL       string // default: https://graph.facebook.com
 }
 
-func NewPhoneAPI(doer ports.HTTPDoer, token ports.TokenProvider, version, wabaID string) *PhoneAPI {
+func NewPhoneAPI(doer ports.HTTPDoer, token ports.TokenProvider, version, wabaID, baseURL string) *PhoneAPI {
+	if baseURL == "" {
+		baseURL = DefaultBaseURL
+	}
 	return &PhoneAPI{
 		doer:          doer,
 		tokenProvider: token,
 		version:       version,
 		wabaID:        wabaID,
-		baseURL:       "https://graph.facebook.com",
+		baseURL:       baseURL,
 	}
 }
 
