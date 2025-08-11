@@ -102,6 +102,7 @@ whatsapp-sdk-go/
 
     * **Entrega**: payloads com `entry`, `changes`, `messages`, `statuses`, `errors`
     * **Serviço**: `WebhookService` (validação de verify token, parsing e utilitários)
+    * **Adapter**: `transport/webhook` handler HTTP para verificação e dispatch
     * **Modelos**: `domain.WebhookEvent`, `domain.MessageEvent`, `domain.StatusEvent`
 
 > Observação: nomes de modelos são ilustrativos e serão finalizados ao implementar a serialização oficial.
