@@ -5,6 +5,7 @@
 * **Current state**: No intelligent agents implemented yet. The project aims to build a fully functional SDK for WhatsApp Business.
 * **Agent objectives**: Support development by ensuring updated documentation, identifying bugs, optimizing code, creating automated tests, and verifying compliance with **SOLID** principles and **Hexagonal Architecture**.
 * **Supervision**: All agents operate under human supervision. No changes are applied without explicit approval from the project owner.
+* **WhatsApp Business Official Postman documentation**: docs/WhatsApp Cloud API.postman_collection.json
 
 ## 2. Architecture and Technology Stack
 

@@ -7,11 +7,20 @@ import (
 
 	"github.com/diegoyosiura/whatsapp-sdk-go/pkg/whatsapp"
 	"github.com/diegoyosiura/whatsapp-sdk-go/pkg/whatsapp/domain"
+	"github.com/diegoyosiura/whatsapp-sdk-go/pkg/whatsapp/ports"
+	"github.com/diegoyosiura/whatsapp-sdk-go/pkg/whatsapp/services"
 
 	"log"
 	"os"
 	"time"
 )
+
+type whSecretProvider struct{}
+
+func (w whSecretProvider) Get(ctx context.Context, key ports.SecretKey) (string, error) {
+	//TODO implement me
+	panic("implement me")
+}
 
 type envToken struct{}
 
@@ -27,6 +36,7 @@ func main() {
 	pin := flag.String("pin", "", "two-step PIN")
 	flag.Parse()
 
+	_ = services.NewWebhookService(whSecretProvider{})
 	c, err := whatsapp.NewClient(whatsapp.Options{
 		Version:       os.Getenv("WA_GRAPH_VERSION"),
 		WABAID:        os.Getenv("WA_WABA_ID"),
