@@ -98,3 +98,49 @@ func TestWebhookService_ParseEvent_OK(t *testing.T) {
 		t.Fatalf("unexpected object: %s", ev.Object)
 	}
 }
+
+func TestWebhookService_ValidateVerifyToken_Success(t *testing.T) {
+	fp := &intfakes.FakeSecretsProvider{Secrets: map[ports.SecretKey]string{
+		ports.VerifyTokenKey: "secret",
+	}}
+	svc := services.NewWebhookService(fp)
+	if err := svc.ValidateVerifyToken(context.Background(), "secret"); err != nil {
+		t.Fatalf("expected nil, got %v", err)
+	}
+}
+
+func TestWebhookService_ValidateVerifyToken_Empty(t *testing.T) {
+	fp := &intfakes.FakeSecretsProvider{}
+	svc := services.NewWebhookService(fp)
+	if err := svc.ValidateVerifyToken(context.Background(), ""); err == nil {
+		t.Fatalf("expected error for empty token, got nil")
+	}
+}
+
+func TestWebhookService_VerifySignature_InvalidHeader(t *testing.T) {
+	fp := &intfakes.FakeSecretsProvider{Secrets: map[ports.SecretKey]string{
+		ports.AppSecretKey: "secret",
+	}}
+	svc := services.NewWebhookService(fp)
+	if err := svc.VerifySignature(context.Background(), []byte("body"), "bad"); err == nil {
+		t.Fatalf("expected error for invalid header, got nil")
+	}
+}
+
+func TestWebhookService_VerifySignature_InvalidHex(t *testing.T) {
+	fp := &intfakes.FakeSecretsProvider{Secrets: map[ports.SecretKey]string{
+		ports.AppSecretKey: "secret",
+	}}
+	svc := services.NewWebhookService(fp)
+	if err := svc.VerifySignature(context.Background(), []byte("body"), "sha256=zzzz"); err == nil {
+		t.Fatalf("expected error for invalid hex, got nil")
+	}
+}
+
+func TestWebhookService_ParseEvent_BadJSON(t *testing.T) {
+	fp := &intfakes.FakeSecretsProvider{}
+	svc := services.NewWebhookService(fp)
+	if _, err := svc.ParseEvent(context.Background(), []byte("not-json")); err == nil {
+		t.Fatalf("expected error for bad json, got nil")
+	}
+}
