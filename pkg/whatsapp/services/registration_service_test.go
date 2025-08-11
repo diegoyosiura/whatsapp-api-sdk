@@ -95,7 +95,7 @@ func TestRegistration_ErrorGraphPayload(t *testing.T) {
 	defer ts.Close()
 
 	c := newRegClient(t, ts.URL)
-	svc := services.NewRegistrationService(c.RegistrationService().API())
+	svc := services.NewRegistrationService(c.Registration.API())
 
 	_, err := svc.Register(context.Background(), domain.RegisterParams{Pin: ptr("000000")})
 	if err == nil {
