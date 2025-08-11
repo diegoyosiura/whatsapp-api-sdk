@@ -110,16 +110,5 @@ func TestRegistration_ErrorGraphPayload(t *testing.T) {
 func ptr(s string) *string { return &s }
 
 // small helper: errors.As across go versions used in tests only
-func As(err error, target any) bool { return errorsxAs(err, target) }
-
-// shim to avoid importing "errors" in multiple places
-func errorsxAs(err error, target any) bool {
-	type as interface{ As(error, any) bool }
-	// Use std errors.As via a tiny indirection to keep this file focused
-	return func(e error, t any) bool {
-		return (func() bool {
-			// inline: stdlib
-			return errors.As(e, &t)
-		})()
-	}(err, target)
-}
+// It forwards directly to the stdlib errors.As to ensure the target is populated.
+func As(err error, target any) bool { return errors.As(err, target) }

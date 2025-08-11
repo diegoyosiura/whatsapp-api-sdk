@@ -48,8 +48,8 @@ func NewClient(o Options) (*Client, error) {
 		doer = httpx.New(httpx.Options{MaxRetries: o.RetryMax})
 	}
 
-	phoneAPI := graph.NewPhoneAPI(doer, o.TokenProvider, o.Version, o.WABAID)
-	regAPI := graph.NewRegistrationAPI(doer, o.TokenProvider, o.Version, o.PhoneNumberID)
+	phoneAPI := graph.NewPhoneAPI(doer, o.TokenProvider, o.Version, o.WABAID, o.BaseURL)
+	regAPI := graph.NewRegistrationAPI(doer, o.TokenProvider, o.Version, o.PhoneNumberID, o.BaseURL)
 
 	c := &Client{
 		Phone:         services.NewPhoneService(phoneAPI),

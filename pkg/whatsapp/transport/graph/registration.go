@@ -27,13 +27,16 @@ type RegistrationAPI struct {
 var _ ports.RegistrationAPI = (*RegistrationAPI)(nil)
 
 // NewRegistrationAPI wires the adapter with hexagonal dependencies and static params.
-func NewRegistrationAPI(doer ports.HTTPDoer, token ports.TokenProvider, version, phoneNumberID string) *RegistrationAPI {
+func NewRegistrationAPI(doer ports.HTTPDoer, token ports.TokenProvider, version, phoneNumberID, baseURL string) *RegistrationAPI {
+	if baseURL == "" {
+		baseURL = DefaultBaseURL
+	}
 	return &RegistrationAPI{
 		doer:          doer,
 		tokenProvider: token,
 		version:       version,
 		phoneNumberID: phoneNumberID,
-		baseURL:       DefaultBaseURL,
+		baseURL:       baseURL,
 	}
 }
 
