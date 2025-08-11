@@ -274,3 +274,46 @@ func Test_isTempOrTimeout_OnlyForNetError(t *testing.T) {
 		t.Fatalf("net.Error timeout should be considered temp/timeout")
 	}
 }
+
+func TestDo_NilRequest(t *testing.T) {
+	d := New(Options{})
+	if _, err := d.Do(context.Background(), nil); err == nil || !strings.Contains(err.Error(), "nil request") {
+		t.Fatalf("expected nil request error, got %v", err)
+	}
+}
+
+func TestDo_RewindBodyError(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusInternalServerError)
+	}))
+	defer ts.Close()
+
+	d := tinyBackoffDoer(ts.Client().Transport, 1)
+	req, _ := http.NewRequest(http.MethodPost, ts.URL, io.NopCloser(bytes.NewBufferString("x")))
+	req.GetBody = func() (io.ReadCloser, error) { return nil, errors.New("boom") }
+	if _, err := d.Do(context.Background(), req); err == nil || !strings.Contains(err.Error(), "rewind body") {
+		t.Fatalf("expected rewind error, got %v", err)
+	}
+}
+
+type errRT struct{}
+
+func (errRT) RoundTrip(*http.Request) (*http.Response, error) { return nil, errors.New("fail") }
+
+func TestDo_NonRetryableNetworkError(t *testing.T) {
+	d := tinyBackoffDoer(errRT{}, 3)
+	req, _ := http.NewRequest(http.MethodGet, "http://example.com", nil)
+	if _, err := d.Do(context.Background(), req); err == nil || !strings.Contains(err.Error(), "fail") {
+		t.Fatalf("expected network error, got %v", err)
+	}
+}
+
+func TestDo_ReachesFinalReturn(t *testing.T) {
+	d := New(Options{})
+	d.maxRetries = -1 // force loop skip
+	req, _ := http.NewRequest(http.MethodGet, "http://example.com", nil)
+	resp, err := d.Do(context.Background(), req)
+	if resp != nil || err != nil {
+		t.Fatalf("expected nil resp and err, got %v %v", resp, err)
+	}
+}
