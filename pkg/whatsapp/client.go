@@ -114,7 +114,5 @@ func (c *Client) Do(ctx context.Context, req *http.Request) (*http.Response, err
 	return c.do(ctx, req)
 }
 func (c *Client) RegistrationService() *services.RegistrationService {
-	return services.NewRegistrationService(
-		graph.NewRegistrationAPI(c.httpDoer, c.tokenProvider, c.version, c.phoneNumberID),
-	)
+	return c.Registration
 }
