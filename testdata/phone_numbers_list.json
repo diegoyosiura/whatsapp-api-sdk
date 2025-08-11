@@ -1,0 +1,6 @@
+{
+  "data": [
+    { "id": "1234567890", "display_phone_number": "+55 11 99999-9999", "quality_rating": "GREEN" },
+    { "id": "0987654321", "display_phone_number": "+55 21 98888-8888", "quality_rating": "YELLOW" }
+  ]
+}

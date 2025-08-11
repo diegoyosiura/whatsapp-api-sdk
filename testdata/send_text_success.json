@@ -1,0 +1,9 @@
+{
+  "messaging_product": "whatsapp",
+  "contacts": [
+    { "input": "+5511999999999", "wa_id": "5511999999999" }
+  ],
+  "messages": [
+    { "id": "wamid.HBgLMTE5OTk5OTk5OTkVAgARGBI1QzE0MjJGMUIwQjkxQTA4QTYA" }
+  ]
+}

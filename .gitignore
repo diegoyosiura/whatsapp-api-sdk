@@ -49,12 +49,6 @@ config.yaml
 config.yml
 config.json
 
-# Test data and fixtures
-
-/testdata/*.json
-/testdata/*.yaml
-/testdata/*.yml
-/testdata/*.log
 
 # Temporary files
 
