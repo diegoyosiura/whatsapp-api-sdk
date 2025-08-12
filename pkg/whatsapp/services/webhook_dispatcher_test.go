@@ -1,6 +1,7 @@
 package services_test
 
 import (
+	"fmt"
 	"net/http"
 	"testing"
 
@@ -11,6 +12,10 @@ import (
 type fakeWebhookHandler struct {
 	messages []domain.InboundMessage
 	statuses []domain.MessageStatus
+}
+
+func (f *fakeWebhookHandler) Always(e domain.WebhookEvent, h http.Header) {
+	fmt.Println("not implemented")
 }
 
 func (f *fakeWebhookHandler) OnMessage(m domain.InboundMessage, e domain.WebhookEvent, h http.Header) {

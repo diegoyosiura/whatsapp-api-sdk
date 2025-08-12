@@ -7,6 +7,7 @@ import (
 )
 
 type WebhookHandler interface {
+	Always(e domain.WebhookEvent, h http.Header)
 	OnMessage(m domain.InboundMessage, e domain.WebhookEvent, h http.Header)
 	OnStatus(s domain.MessageStatus, e domain.WebhookEvent, h http.Header)
 }
@@ -16,6 +17,7 @@ type WebhookDispatcher struct{ h WebhookHandler }
 func NewWebhookDispatcher(h WebhookHandler) *WebhookDispatcher { return &WebhookDispatcher{h: h} }
 
 func (d *WebhookDispatcher) Dispatch(e domain.WebhookEvent, h http.Header) {
+	d.h.Always(e, h)
 	for _, entry := range e.Entry {
 		for _, ch := range entry.Changes {
 			if len(ch.Value.Messages) > 0 {

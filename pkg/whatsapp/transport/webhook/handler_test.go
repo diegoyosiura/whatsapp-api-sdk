@@ -5,6 +5,7 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -18,6 +19,9 @@ import (
 
 type fakeHandler struct{ messages []domain.InboundMessage }
 
+func (f *fakeHandler) Always(e domain.WebhookEvent, h http.Header) {
+	fmt.Println("not implemented")
+}
 func (f *fakeHandler) OnMessage(m domain.InboundMessage, e domain.WebhookEvent, h http.Header) {
 	f.messages = append(f.messages, m)
 }
