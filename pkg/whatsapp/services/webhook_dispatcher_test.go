@@ -1,6 +1,7 @@
 package services_test
 
 import (
+	"net/http"
 	"testing"
 
 	"github.com/diegoyosiura/whatsapp-sdk-go/pkg/whatsapp/domain"
@@ -12,8 +13,12 @@ type fakeWebhookHandler struct {
 	statuses []domain.MessageStatus
 }
 
-func (f *fakeWebhookHandler) OnMessage(m domain.InboundMessage) { f.messages = append(f.messages, m) }
-func (f *fakeWebhookHandler) OnStatus(s domain.MessageStatus)   { f.statuses = append(f.statuses, s) }
+func (f *fakeWebhookHandler) OnMessage(m domain.InboundMessage, e domain.WebhookEvent, h http.Header) {
+	f.messages = append(f.messages, m)
+}
+func (f *fakeWebhookHandler) OnStatus(s domain.MessageStatus, e domain.WebhookEvent, h http.Header) {
+	f.statuses = append(f.statuses, s)
+}
 
 func TestWebhookDispatcher_Dispatch(t *testing.T) {
 	h := &fakeWebhookHandler{}
@@ -28,7 +33,7 @@ func TestWebhookDispatcher_Dispatch(t *testing.T) {
 		}},
 	}
 
-	dispatcher.Dispatch(event)
+	dispatcher.Dispatch(event, http.Header{})
 
 	if len(h.messages) != 2 {
 		t.Fatalf("expected 2 messages, got %d", len(h.messages))
@@ -47,7 +52,7 @@ func TestWebhookDispatcher_Dispatch(t *testing.T) {
 func TestWebhookDispatcher_DispatchEmpty(t *testing.T) {
 	h := &fakeWebhookHandler{}
 	dispatcher := services.NewWebhookDispatcher(h)
-	dispatcher.Dispatch(domain.WebhookEvent{})
+	dispatcher.Dispatch(domain.WebhookEvent{}, http.Header{})
 	if len(h.messages) != 0 {
 		t.Fatalf("expected no messages, got %d", len(h.messages))
 	}

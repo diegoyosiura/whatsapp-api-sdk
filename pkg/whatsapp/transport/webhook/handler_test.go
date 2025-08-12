@@ -18,8 +18,10 @@ import (
 
 type fakeHandler struct{ messages []domain.InboundMessage }
 
-func (f *fakeHandler) OnMessage(m domain.InboundMessage) { f.messages = append(f.messages, m) }
-func (f *fakeHandler) OnStatus(domain.MessageStatus)     {}
+func (f *fakeHandler) OnMessage(m domain.InboundMessage, e domain.WebhookEvent, h http.Header) {
+	f.messages = append(f.messages, m)
+}
+func (f *fakeHandler) OnStatus(s domain.MessageStatus, e domain.WebhookEvent, h http.Header) {}
 
 func TestHandler_GetVerify(t *testing.T) {
 	fp := &intfakes.FakeSecretsProvider{Secrets: map[ports.SecretKey]string{

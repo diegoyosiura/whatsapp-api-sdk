@@ -54,7 +54,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		if h.Dispatcher != nil {
-			h.Dispatcher.Dispatch(event)
+			h.Dispatcher.Dispatch(event, r.Header)
 		}
 		w.WriteHeader(http.StatusOK)
 		_, _ = io.WriteString(w, "ok")

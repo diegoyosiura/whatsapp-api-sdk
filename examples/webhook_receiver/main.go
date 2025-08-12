@@ -49,7 +49,7 @@ type logHandler struct {
 	c *whatsapp.Client
 }
 
-func (lh logHandler) OnMessage(m domain.InboundMessage) {
+func (lh logHandler) OnMessage(m domain.InboundMessage, e domain.WebhookEvent, h http.Header) {
 	log.Printf("incoming message id=%s", m.ID)
 	fm, err := lh.c.Media.GetMedia(context.Background(), m, fileMan{})
 	if err != nil {
@@ -57,7 +57,7 @@ func (lh logHandler) OnMessage(m domain.InboundMessage) {
 	}
 	log.Printf("media info: %+v", fm)
 }
-func (lh logHandler) OnStatus(s domain.MessageStatus) {
+func (lh logHandler) OnStatus(s domain.MessageStatus, e domain.WebhookEvent, h http.Header) {
 	log.Printf("status id=%s status=%s", s.ID, s.Status)
 }
 
