@@ -54,3 +54,6 @@ func VerifyCodeEndpoint(base, version, phoneNumberID string) string {
 func TwoFactorEndpoint(base, version, phoneNumberID string) string {
 	return buildURL(base, version, phoneNumberID)
 }
+func RequestMediaLink(base, version, mediaID string) string {
+	return buildURL(base, version, mediaID)
+}

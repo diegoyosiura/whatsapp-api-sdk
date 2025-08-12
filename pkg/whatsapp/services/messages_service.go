@@ -5,29 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"net/http"
 
 	"github.com/diegoyosiura/whatsapp-sdk-go/pkg/errorsx"
 	"github.com/diegoyosiura/whatsapp-sdk-go/pkg/whatsapp/domain"
-	"github.com/diegoyosiura/whatsapp-sdk-go/pkg/whatsapp/ports"
 	"github.com/diegoyosiura/whatsapp-sdk-go/pkg/whatsapp/transport/graph"
 )
-
-// MessagesService provides high-level operations for sending messages.
-// It uses the transport/graph adapter to build HTTP requests and relies on the
-// Client's configured HTTPDoer and TokenProvider to execute them.
-type MessagesService struct {
-	c clientCore
-}
-
-// clientCore is the minimal facade the service needs; *whatsapp.Client satisfies it.
-type clientCore interface {
-	BaseURL() string
-	Version() string
-	PhoneNumberID() string
-	TokenProvider() ports.TokenProvider
-	Do(ctx context.Context, req *http.Request) (*http.Response, error)
-}
 
 // NewMessagesService creates a new MessagesService bound to a minimal client interface.
 func NewMessagesService(c clientCore) *MessagesService { return &MessagesService{c: c} }

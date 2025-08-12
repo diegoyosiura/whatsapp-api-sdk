@@ -27,6 +27,7 @@ type Client struct {
 	Phone        *services.PhoneService
 	Registration *services.RegistrationService
 	Webhook      *services.WebhookService
+	Media        *services.MediaService
 
 	baseURL  string
 	timeout  time.Duration
@@ -67,6 +68,7 @@ func NewClient(o Options) (*Client, error) {
 		uaExtra:       o.UserAgent,
 	}
 	c.Messages = services.NewMessagesService(c)
+	c.Media = services.NewMediaService(c)
 	return c, nil
 }
 
@@ -105,10 +107,15 @@ func (c *Client) do(ctx context.Context, req *http.Request) (*http.Response, err
 
 // Narrow getters used by services without leaking internal fields.
 
-func (c *Client) Version() string                    { return c.version }
-func (c *Client) WABAID() string                     { return c.wabaID }
-func (c *Client) PhoneNumberID() string              { return c.phoneNumberID }
-func (c *Client) BaseURL() string                    { return c.baseURL }
+func (c *Client) Version() string       { return c.version }
+func (c *Client) WABAID() string        { return c.wabaID }
+func (c *Client) PhoneNumberID() string { return c.phoneNumberID }
+func (c *Client) BaseURL() string {
+	if c.baseURL == "" {
+		c.baseURL = graph.DefaultBaseURL
+	}
+	return c.baseURL
+}
 func (c *Client) TokenProvider() ports.TokenProvider { return c.tokenProvider }
 func (c *Client) Do(ctx context.Context, req *http.Request) (*http.Response, error) {
 	return c.do(ctx, req)
