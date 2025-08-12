@@ -8,6 +8,7 @@ import (
 	"math/rand"
 	"net"
 	"net/http"
+	"syscall"
 	"time"
 )
 
@@ -138,11 +139,45 @@ func (d *Doer) sleep(dur time.Duration) {
 }
 
 func isTempOrTimeout(err error) bool {
-	var nerr net.Error
-	if errors.As(err, &nerr) {
-		return nerr.Timeout() || nerr.Temporary()
+	if err == nil {
+		return false
 	}
-	// For other errors (e.g., connection reset), a conservative approach is to not retry unless policy is explicit.
+
+	// Permanent: caller canceled or listener/conn closed.
+	if errors.Is(err, context.Canceled) || errors.Is(err, net.ErrClosed) {
+		return false
+	}
+
+	// Generic network timeout.
+	var ne net.Error
+	if errors.As(err, &ne) && ne.Timeout() {
+		return true
+	}
+
+	// DNS specific signals.
+	var dnserr *net.DNSError
+	if errors.As(err, &dnserr) {
+		if dnserr.IsTimeout || dnserr.IsTemporary {
+			return true
+		}
+	}
+
+	// Common transient syscall errors seen on sockets.
+	switch {
+	case errors.Is(err, syscall.ECONNRESET),
+		errors.Is(err, syscall.ECONNABORTED),
+		errors.Is(err, syscall.EPIPE),
+		errors.Is(err, syscall.ETIMEDOUT),
+		errors.Is(err, syscall.EHOSTUNREACH),
+		errors.Is(err, syscall.ENETUNREACH):
+		return true
+	}
+
+	// Often transient when reading HTTP bodies.
+	if errors.Is(err, io.ErrUnexpectedEOF) {
+		return true
+	}
+
 	return false
 }
 
