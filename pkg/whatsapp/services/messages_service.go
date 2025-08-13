@@ -1,6 +1,7 @@
 package services
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -29,15 +30,32 @@ func (s *MessagesService) SendText(ctx context.Context, to, body string) (*domai
 		return nil, &errorsx.ValidationError{Op: "SendText", Field: "to", Reason: "must be E.164 like +5511999999999"}
 	}
 
-	payload := graph.SendTextRequest{MessagingProduct: "whatsapp", To: to, Type: "text"}
+	payload := domain.SendTextRequest{MessagingProduct: "whatsapp", To: to, Type: "text"}
 	payload.Text.Body = body
+	buf, err := payload.Buffer()
+	if err != nil {
+		return nil, &errorsx.ValidationError{Op: "SendText", Field: "body", Reason: err.Error()}
+	}
+	b, err := s.doRequest(ctx, buf)
 
+	if err != nil {
+		return nil, err
+	}
+
+	var out domain.MessageSendResponse
+	if err = json.Unmarshal(b, &out); err != nil {
+		return nil, fmt.Errorf("decode success response: %w", err)
+	}
+	return &out, nil
+}
+
+func (s *MessagesService) doRequest(ctx context.Context, payload *bytes.Buffer) ([]byte, error) {
 	base := s.c.BaseURL()
 	if base == "" {
 		base = graph.DefaultBaseURL
 	}
 
-	req, err := graph.NewSendTextHTTPRequest(ctx, base, s.c.Version(), s.c.PhoneNumberID(), payload, s.c.TokenProvider())
+	req, err := graph.NewSendHTTPRequest(ctx, base, s.c.Version(), s.c.PhoneNumberID(), payload, s.c.TokenProvider())
 	if err != nil {
 		return nil, fmt.Errorf("build request: %w", err)
 	}
@@ -60,11 +78,7 @@ func (s *MessagesService) SendText(ctx context.Context, to, body string) (*domai
 		return nil, errorsx.NewHTTPErrorFromResponse(resp, b)
 	}
 
-	var out domain.MessageSendResponse
-	if err := json.Unmarshal(b, &out); err != nil {
-		return nil, fmt.Errorf("decode success response: %w", err)
-	}
-	return &out, nil
+	return b, nil
 }
 func isE164(s string) bool {
 	if len(s) < 4 || len(s) > 17 {
