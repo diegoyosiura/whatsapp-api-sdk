@@ -76,22 +76,22 @@ func (s *SendMessage) validateContactMessage() error {
 		return &errorsx.ValidationError{Field: "Type", Reason: "type must be contacts", Op: "validateContactMessage"}
 	}
 	if s.ContactMessage == nil {
-		return &errorsx.ValidationError{Field: "Type", Reason: "contact is nil", Op: "validateContactMessage"}
+		return &errorsx.ValidationError{Field: "ContactMessage", Reason: "contact is nil", Op: "validateContactMessage"}
 	}
 	if len(s.ContactMessage.Contacts) == 0 {
-		return &errorsx.ValidationError{Field: "Type", Reason: "must have at least one contact", Op: "validateContactMessage"}
+		return &errorsx.ValidationError{Field: "Contacts", Reason: "must have at least one contact", Op: "validateContactMessage"}
 	}
 
 	for _, contact := range s.ContactMessage.Contacts {
 		if contact == nil {
-			return &errorsx.ValidationError{Field: "Type", Reason: "nil contact found", Op: "validateContactMessage"}
+			return &errorsx.ValidationError{Field: "Contacts[]", Reason: "nil contact found", Op: "validateContactMessage"}
 		}
 		if contact.Name == nil {
-			return &errorsx.ValidationError{Field: "Type", Reason: "nil contact name found", Op: "validateContactMessage"}
+			return &errorsx.ValidationError{Field: "Contacts[].Name", Reason: "nil contact name found", Op: "validateContactMessage"}
 		}
 
 		if contact.Name.FirstName == "" {
-			return &errorsx.ValidationError{Field: "Type", Reason: "contact.Name.FirstName is empty", Op: "validateContactMessage"}
+			return &errorsx.ValidationError{Field: "Contacts[].Name.FirstName", Reason: "contact.Name.FirstName is empty", Op: "validateContactMessage"}
 		}
 	}
 	return nil
