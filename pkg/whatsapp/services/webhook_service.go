@@ -7,6 +7,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/diegoyosiura/whatsapp-sdk-go/pkg/whatsapp/domain"
@@ -27,16 +28,21 @@ func NewWebhookService(secrets ports.SecretsProvider) *WebhookService {
 // Use this in the GET verification handshake: the provider echoes back hub.challenge
 // only if the verify token matches.
 func (s *WebhookService) ValidateVerifyToken(ctx context.Context, provided string) error {
+	log.Printf("verify-token")
 	if strings.TrimSpace(provided) == "" {
+		log.Printf("empty token")
 		return errors.New("verify token is empty")
 	}
 	want, err := s.secrets.Get(ctx, ports.VerifyTokenKey)
 	if err != nil {
+		log.Printf("error: %s", err)
 		return fmt.Errorf("failed to read verify token: %w", err)
 	}
 	if provided != want {
+		log.Printf("verify token mismatch: %s || %s", provided, want)
 		return errors.New("verify token mismatch")
 	}
+	log.Printf("verify token success")
 	return nil
 }
 
