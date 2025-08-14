@@ -29,8 +29,14 @@ func NewSendContextTextRequest(to, body, targetMessage string) *SendMessage {
 }
 
 func (s *SendMessage) validateTextMessage() error {
+	if s.TextMessage == nil {
+		return &errorsx.ValidationError{Op: "validateTextMessage", Field: "TextMessage", Reason: "nil body"}
+	}
+	if s.TextMessage.Text == nil {
+		return &errorsx.ValidationError{Op: "validateTextMessage", Field: "Text", Reason: "nil text"}
+	}
 	if s.TextMessage.Text.Body == "" {
-		return &errorsx.ValidationError{Op: "SendMessage", Field: "body", Reason: "empty"}
+		return &errorsx.ValidationError{Op: "validateTextMessage", Field: "Body", Reason: "empty"}
 	}
 
 	return nil

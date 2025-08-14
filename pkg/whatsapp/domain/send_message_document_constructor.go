@@ -1,5 +1,7 @@
 package domain
 
+import "github.com/diegoyosiura/whatsapp-sdk-go/pkg/errorsx"
+
 type DocumentMessage struct {
 	Document *DocumentBody `json:"document"`
 }
@@ -53,5 +55,17 @@ func NewSendContextDocumentRequest(to, documentID, documentLink, caption, fileNa
 	}
 }
 func (s *SendMessage) validateDocumentMessage() error {
+	if s.Type != "document" {
+		return &errorsx.ValidationError{Field: "Type", Reason: "type must be document", Op: "validateDocumentMessage"}
+	}
+
+	if s.DocumentMessage == nil {
+		return &errorsx.ValidationError{Field: "DocumentMessage", Reason: "document is nil", Op: "validateDocumentMessage"}
+	}
+
+	if s.DocumentMessage.Document == nil {
+		return &errorsx.ValidationError{Field: "Document", Reason: "document is nil", Op: "validateDocumentMessage"}
+	}
+
 	return nil
 }

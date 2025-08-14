@@ -1,5 +1,7 @@
 package domain
 
+import "github.com/diegoyosiura/whatsapp-sdk-go/pkg/errorsx"
+
 type ContactMessage struct {
 	Contacts []*Contact `json:"contacts"`
 }
@@ -70,5 +72,27 @@ func NewSendContextContactRequest(to, targetMessage string, contactList []*Conta
 }
 
 func (s *SendMessage) validateContactMessage() error {
+	if s.Type != "contacts" {
+		return &errorsx.ValidationError{Field: "Type", Reason: "type must be contacts", Op: "validateContactMessage"}
+	}
+	if s.ContactMessage == nil {
+		return &errorsx.ValidationError{Field: "Type", Reason: "contact is nil", Op: "validateContactMessage"}
+	}
+	if len(s.ContactMessage.Contacts) == 0 {
+		return &errorsx.ValidationError{Field: "Type", Reason: "must have at least one contact", Op: "validateContactMessage"}
+	}
+
+	for _, contact := range s.ContactMessage.Contacts {
+		if contact == nil {
+			return &errorsx.ValidationError{Field: "Type", Reason: "nil contact found", Op: "validateContactMessage"}
+		}
+		if contact.Name == nil {
+			return &errorsx.ValidationError{Field: "Type", Reason: "nil contact name found", Op: "validateContactMessage"}
+		}
+
+		if contact.Name.FirstName == "" {
+			return &errorsx.ValidationError{Field: "Type", Reason: "contact.Name.FirstName is empty", Op: "validateContactMessage"}
+		}
+	}
 	return nil
 }

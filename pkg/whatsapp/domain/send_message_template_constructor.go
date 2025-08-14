@@ -1,5 +1,7 @@
 package domain
 
+import "github.com/diegoyosiura/whatsapp-sdk-go/pkg/errorsx"
+
 type TemplateMessage struct {
 	Template *TemplateBody `json:"template"`
 }
@@ -81,5 +83,17 @@ func NewSendTemplateRequest(to, templateName, templateLang string, componentList
 }
 
 func (s *SendMessage) validateTemplateMessage() error {
+	if s.TemplateMessage == nil {
+		return &errorsx.ValidationError{Op: "validateTemplateMessage", Field: "TemplateMessage", Reason: "nil body"}
+	}
+	if s.TemplateMessage.Template == nil {
+		return &errorsx.ValidationError{Op: "validateTemplateMessage", Field: "Template", Reason: "nil template"}
+	}
+	if s.TemplateMessage.Template.Language == nil {
+		return &errorsx.ValidationError{Op: "validateTemplateMessage", Field: "Template.Language", Reason: "nil lang"}
+	}
+	if len(s.TemplateMessage.Template.Components) == 0 {
+		return &errorsx.ValidationError{Op: "validateTemplateMessage", Field: "Template.Components", Reason: "empty components"}
+	}
 	return nil
 }

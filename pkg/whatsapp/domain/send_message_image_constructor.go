@@ -1,5 +1,7 @@
 package domain
 
+import "github.com/diegoyosiura/whatsapp-sdk-go/pkg/errorsx"
+
 type ImageMessage struct {
 	Image *ImageBody `json:"image"`
 }
@@ -42,5 +44,24 @@ func NewSendContextImageRequest(to, imageId, imageURL, targetMessage string) *Se
 	}
 }
 func (s *SendMessage) validateImageMessage() error {
+	if s.Type != "image" {
+		return &errorsx.ValidationError{Field: "Type", Reason: "type must be image", Op: "validateImageMessage"}
+	}
+
+	if s.ImageMessage == nil {
+		return &errorsx.ValidationError{Field: "ImageMessage", Reason: "image is nil", Op: "validateImageMessage"}
+	}
+
+	if s.ImageMessage.Image == nil {
+		return &errorsx.ValidationError{Field: "Image", Reason: "image is nil", Op: "validateImageMessage"}
+	}
+
+	if *s.ImageMessage.Image.Id == "" && *s.ImageMessage.Image.Link == "" {
+		return &errorsx.ValidationError{Field: "Image", Reason: "the reference must be a link or a Id, nothing received", Op: "validateImageMessage"}
+	}
+
+	if *s.ImageMessage.Image.Id != "" && *s.ImageMessage.Image.Link != "" {
+		return &errorsx.ValidationError{Field: "Image", Reason: "the reference must be a link or a Id, both received", Op: "validateImageMessage"}
+	}
 	return nil
 }

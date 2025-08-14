@@ -1,5 +1,7 @@
 package domain
 
+import "github.com/diegoyosiura/whatsapp-sdk-go/pkg/errorsx"
+
 type VideoMessage struct {
 	Video *VideoBody `json:"video"`
 }
@@ -50,5 +52,24 @@ func NewSendContextVideoRequest(to, videoID, videoLink, caption, targetMessage s
 	}
 }
 func (s *SendMessage) validateVideoMessage() error {
+	if s.Type != "video" {
+		return &errorsx.ValidationError{Field: "Type", Reason: "type must be video", Op: "validateVideoMessage"}
+	}
+
+	if s.VideoMessage == nil {
+		return &errorsx.ValidationError{Field: "VideoMessage", Reason: "video is nil", Op: "validateVideoMessage"}
+	}
+
+	if s.VideoMessage.Video == nil {
+		return &errorsx.ValidationError{Field: "Video", Reason: "video is nil", Op: "validateVideoMessage"}
+	}
+
+	if *s.VideoMessage.Video.Id == "" && *s.VideoMessage.Video.Link == "" {
+		return &errorsx.ValidationError{Field: "Video", Reason: "the reference must be a link or a Id, nothing received", Op: "validateVideoMessage"}
+	}
+
+	if *s.VideoMessage.Video.Id != "" && *s.VideoMessage.Video.Link != "" {
+		return &errorsx.ValidationError{Field: "Video", Reason: "the reference must be a link or a Id, both received", Op: "validateVideoMessage"}
+	}
 	return nil
 }
