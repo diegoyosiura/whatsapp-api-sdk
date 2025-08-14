@@ -2,6 +2,7 @@ package webhook
 
 import (
 	"io"
+	"log"
 	"net/http"
 
 	"github.com/diegoyosiura/whatsapp-sdk-go/pkg/whatsapp/services"
@@ -40,20 +41,24 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPost:
 		raw, err := io.ReadAll(r.Body)
 		if err != nil {
+			log.Printf("cannot read body")
 			http.Error(w, "cannot read body", http.StatusBadRequest)
 			return
 		}
 		sig := r.Header.Get("X-Hub-Signature-256")
 		if err := h.Service.VerifySignature(ctx, raw, sig); err != nil {
+			log.Printf("invalid signature")
 			http.Error(w, "invalid signature", http.StatusForbidden)
 			return
 		}
 		event, err := h.Service.ParseEvent(ctx, raw)
 		if err != nil {
+			log.Printf("invalid payload: %s", raw)
 			http.Error(w, "invalid payload", http.StatusBadRequest)
 			return
 		}
 		if h.Dispatcher != nil {
+			log.Printf("invalid dispatcher")
 			h.Dispatcher.Dispatch(event, r.Header)
 		}
 		w.WriteHeader(http.StatusOK)
