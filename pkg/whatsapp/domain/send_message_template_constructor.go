@@ -38,7 +38,7 @@ type TemplateParameterCurrencyOptions struct {
 }
 
 type TemplateParameterDateTime struct {
-	Currency *TemplateParameterDateTimeOptions `json:"date_time"`
+	DateTime *TemplateParameterDateTimeOptions `json:"date_time"`
 }
 
 type TemplateParameterDateTimeOptions struct {
@@ -53,7 +53,7 @@ type TemplateParameterDateTimeOptions struct {
 }
 
 type TemplateParameterImage struct {
-	Currency *TemplateParameterImageOptions `json:"image"`
+	Image *TemplateParameterImageOptions `json:"image"`
 }
 
 type TemplateParameterImageOptions struct {

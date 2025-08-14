@@ -10,7 +10,7 @@ type TextBody struct {
 	Body       string `json:"body"`
 }
 
-func NewSendTestMessage(to, body string) *SendMessage {
+func NewSendTextMessage(to, body string) *SendMessage {
 	return &SendMessage{
 		MessagingProduct: "whatsapp",
 		To:               to,

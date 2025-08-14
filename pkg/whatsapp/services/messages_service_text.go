@@ -12,7 +12,7 @@ import (
 // It validates inputs, builds the HTTP request via transport, executes the
 // request using the Client, and decodes the response into domain types.
 func (s *MessagesService) SendText(ctx context.Context, to, body string) (*domain.MessageSendResponse, error) {
-	payload := domain.NewSendTestMessage(to, body)
+	payload := domain.NewSendTextMessage(to, body)
 	if err := payload.Validate(); err != nil {
 		return nil, err
 	}

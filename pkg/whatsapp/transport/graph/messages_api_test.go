@@ -14,10 +14,10 @@ import (
 
 func TestNewSendHTTPRequest(t *testing.T) {
 	ctx := context.Background()
-	payload := domain.SendMessage{MessagingProduct: "whatsapp", To: "123", Type: "text"}
-	payload.Text.Body = "hi"
+	payload := domain.NewSendTextMessage("123", "hi")
 	tp := &portstesting.FakeTokenProvider{TokenValue: "tok"}
-	req, err := NewSendHTTPRequest(ctx, DefaultBaseURL, "v1", "pn", payload, tp)
+	buf, _ := payload.Buffer()
+	req, err := NewSendHTTPRequest(ctx, DefaultBaseURL, "v1", "pn", buf, tp)
 	if err != nil {
 		t.Fatalf("NewSendHTTPRequest error: %v", err)
 	}
@@ -48,7 +48,8 @@ func TestNewSendHTTPRequestTokenError(t *testing.T) {
 	ctx := context.Background()
 	payload := domain.SendMessage{MessagingProduct: "whatsapp", To: "123", Type: "text"}
 	tp := &portstesting.FakeTokenProvider{Err: fmt.Errorf("no token")}
-	_, err := NewSendHTTPRequest(ctx, DefaultBaseURL, "v1", "pn", payload, tp)
+	buf, _ := payload.Buffer()
+	_, err := NewSendHTTPRequest(ctx, DefaultBaseURL, "v1", "pn", buf, tp)
 	if err == nil || !strings.Contains(err.Error(), "token:") {
 		t.Fatalf("expected token error, got %v", err)
 	}
