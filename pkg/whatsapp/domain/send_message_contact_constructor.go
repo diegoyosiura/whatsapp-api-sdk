@@ -5,59 +5,67 @@ type ContactMessage struct {
 }
 
 type Contact struct {
-	Addresses []struct {
-		Street      string `json:"street"`
-		City        string `json:"city"`
-		State       string `json:"state"`
-		Zip         string `json:"zip"`
-		Country     string `json:"country"`
-		CountryCode string `json:"country_code"`
-		Type        string `json:"type"`
-	} `json:"addresses"`
-	Birthday string `json:"birthday"`
-	Emails   []struct {
-		Email string `json:"email"`
-		Type  string `json:"type"`
-	} `json:"emails"`
-	Name struct {
-		FormattedName string `json:"formatted_name"`
-		FirstName     string `json:"first_name"`
-		LastName      string `json:"last_name"`
-		MiddleName    string `json:"middle_name"`
-		Suffix        string `json:"suffix"`
-		Prefix        string `json:"prefix"`
-	} `json:"name"`
-	Org struct {
-		Company    string `json:"company"`
-		Department string `json:"department"`
-		Title      string `json:"title"`
-	} `json:"org"`
-	Phones []struct {
-		Phone string `json:"phone"`
-		WaId  string `json:"wa_id"`
-		Type  string `json:"type"`
-	} `json:"phones"`
-	Urls []struct {
-		Url  string `json:"url"`
-		Type string `json:"type"`
-	} `json:"urls"`
+	Birthday  string            `json:"birthday"`
+	Name      *ContactName      `json:"name"`
+	Org       *ContactOrg       `json:"org"`
+	Addresses []*ContactAddress `json:"addresses"`
+	Emails    []*ContactEmail   `json:"emails"`
+	Phones    []*ContactPhone   `json:"phones"`
+	Urls      []*ContactURL     `json:"urls"`
 }
 
-func NewSendContactRequest(to, body string) *SendMessage {
+type ContactAddress struct {
+	Street      string `json:"street"`
+	City        string `json:"city"`
+	State       string `json:"state"`
+	Zip         string `json:"zip"`
+	Country     string `json:"country"`
+	CountryCode string `json:"country_code"`
+	Type        string `json:"type"`
+}
+type ContactEmail struct {
+	Email string `json:"email"`
+	Type  string `json:"type"`
+}
+type ContactName struct {
+	FormattedName string `json:"formatted_name"`
+	FirstName     string `json:"first_name"`
+	LastName      string `json:"last_name"`
+	MiddleName    string `json:"middle_name"`
+	Suffix        string `json:"suffix"`
+	Prefix        string `json:"prefix"`
+}
+
+type ContactOrg struct {
+	Company    string `json:"company"`
+	Department string `json:"department"`
+	Title      string `json:"title"`
+}
+type ContactPhone struct {
+	Phone string `json:"phone"`
+	WaId  string `json:"wa_id"`
+	Type  string `json:"type"`
+}
+type ContactURL struct {
+	Url  string `json:"url"`
+	Type string `json:"type"`
+}
+
+func NewSendContactRequest(to string, contactList []*Contact) *SendMessage {
 	return &SendMessage{
 		MessagingProduct: "whatsapp",
 		To:               to,
-		Type:             "text",
-		ContactMessage:   &ContactMessage{Contacts: make([]*Contact, 0)},
+		Type:             "contacts",
+		ContactMessage:   &ContactMessage{Contacts: contactList},
 	}
 }
-func NewSendContextContactRequest(to, body, targetMessage string) *SendMessage {
+func NewSendContextContactRequest(to, targetMessage string, contactList []*Contact) *SendMessage {
 	return &SendMessage{
 		MessagingProduct: "whatsapp",
 		To:               to,
-		Type:             "text",
+		Type:             "contacts",
 		ContextMessage:   &ContextMessage{Context: &Context{MessageId: targetMessage}},
-		ContactMessage:   &ContactMessage{Contacts: make([]*Contact, 0)},
+		ContactMessage:   &ContactMessage{Contacts: contactList},
 	}
 }
 

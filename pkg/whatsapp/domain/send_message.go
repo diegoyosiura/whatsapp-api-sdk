@@ -29,6 +29,8 @@ type SendMessage struct {
 	*VideoMessage
 
 	*ContactMessage
+	*LocationMessage
+	*TemplateMessage
 }
 
 func (s *SendMessage) Buffer() (*bytes.Buffer, error) {
@@ -88,6 +90,21 @@ func (s *SendMessage) Validate() error {
 		break
 	case "video":
 		if err := s.validateVideoMessage(); err != nil {
+			return err
+		}
+		break
+	case "contacts":
+		if err := s.validateContactMessage(); err != nil {
+			return err
+		}
+		break
+	case "location":
+		if err := s.validateLocationMessage(); err != nil {
+			return err
+		}
+		break
+	case "template":
+		if err := s.validateTemplateMessage(); err != nil {
 			return err
 		}
 		break
