@@ -44,6 +44,15 @@ func DeregisterEndpoint(base, version, phoneNumberID string) string {
 func RequestCodeEndpoint(base, version, phoneNumberID string) string {
 	return buildURL(base, version, phoneNumberID, "request_code")
 }
+func RequestMediaUpload(base, version, phoneNumberID string) string {
+	return buildURL(base, version, phoneNumberID, "media")
+}
+func RequestMediaDelete(base, version, mediaID string) string {
+	return buildURL(base, version, mediaID)
+}
+func RequestMediaLink(base, version, mediaID string) string {
+	return buildURL(base, version, mediaID)
+}
 
 // VerifyCodeEndpoint returns the full URL for POST /{Version}/{Phone-Number-ID}/verify_code.
 func VerifyCodeEndpoint(base, version, phoneNumberID string) string {
@@ -53,7 +62,4 @@ func VerifyCodeEndpoint(base, version, phoneNumberID string) string {
 // TwoFactorEndpoint returns the full URL for POST /{Version}/{Phone-Number-ID} used for two-factor (2FA) requests.
 func TwoFactorEndpoint(base, version, phoneNumberID string) string {
 	return buildURL(base, version, phoneNumberID)
-}
-func RequestMediaLink(base, version, mediaID string) string {
-	return buildURL(base, version, mediaID)
 }

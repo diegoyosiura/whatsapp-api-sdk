@@ -49,11 +49,33 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	f, _ := os.Open("/home/diego-yosiura/Downloads/rLiFtx.jpg")
+	md, err := c.Media.UploadMedia(context.Background(), f)
+	if err != nil {
+		log.Fatal(err)
+	}
+	d, _ := c.Media.GetMediaURL(context.Background(), md.Id)
+	fmt.Println(d.Url)
+
+	rs, _ := c.Messages.SendImage(context.Background(), *to, md.Id, "")
+	fmt.Println(rs)
+	rs, _ = c.Messages.SendImageReply(context.Background(), *to, md.Id, "", rs.Messages[0].ID)
+	fmt.Println(rs)
+
+	rs, _ = c.Messages.SendImage(context.Background(), *to, "", d.Url)
+	fmt.Println(rs)
+	rs, _ = c.Messages.SendImageReply(context.Background(), *to, "", d.Url, rs.Messages[0].ID)
+	fmt.Println(rs)
+
+	de, _ := c.Media.DeleteMedia(context.Background(), md.Id)
+	fmt.Println(de.Success)
 
 	ctx := context.Background()
 	switch *cmd {
 	case "send-text":
 		resp, err := c.Messages.SendText(ctx, *to, *body)
+		//resp, err = c.Messages.SendTextReply(ctx, *to, *body, "wamid.HBgNNTUxMTk3NDI5NTU3NxUCABEYEkJDRDJBOTVBNTI5OUYyOTU3MQA=")
+		resp, err = c.Messages.SendEmojiReply(ctx, *to, resp.Messages[0].ID, "\u2764")
 		if err != nil {
 			log.Fatal(err)
 		}

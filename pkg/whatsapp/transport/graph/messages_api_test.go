@@ -9,16 +9,17 @@ import (
 	"testing"
 
 	portstesting "github.com/diegoyosiura/whatsapp-sdk-go/internal/testutils/whatsapp/ports"
+	"github.com/diegoyosiura/whatsapp-sdk-go/pkg/whatsapp/domain"
 )
 
-func TestNewSendTextHTTPRequest(t *testing.T) {
+func TestNewSendHTTPRequest(t *testing.T) {
 	ctx := context.Background()
-	payload := SendTextRequest{MessagingProduct: "whatsapp", To: "123", Type: "text"}
+	payload := domain.SendMessage{MessagingProduct: "whatsapp", To: "123", Type: "text"}
 	payload.Text.Body = "hi"
 	tp := &portstesting.FakeTokenProvider{TokenValue: "tok"}
-	req, err := NewSendTextHTTPRequest(ctx, DefaultBaseURL, "v1", "pn", payload, tp)
+	req, err := NewSendHTTPRequest(ctx, DefaultBaseURL, "v1", "pn", payload, tp)
 	if err != nil {
-		t.Fatalf("NewSendTextHTTPRequest error: %v", err)
+		t.Fatalf("NewSendHTTPRequest error: %v", err)
 	}
 	if req.Method != http.MethodPost {
 		t.Fatalf("expected POST got %s", req.Method)
@@ -43,11 +44,11 @@ func TestNewSendTextHTTPRequest(t *testing.T) {
 	}
 }
 
-func TestNewSendTextHTTPRequestTokenError(t *testing.T) {
+func TestNewSendHTTPRequestTokenError(t *testing.T) {
 	ctx := context.Background()
-	payload := SendTextRequest{MessagingProduct: "whatsapp", To: "123", Type: "text"}
+	payload := domain.SendMessage{MessagingProduct: "whatsapp", To: "123", Type: "text"}
 	tp := &portstesting.FakeTokenProvider{Err: fmt.Errorf("no token")}
-	_, err := NewSendTextHTTPRequest(ctx, DefaultBaseURL, "v1", "pn", payload, tp)
+	_, err := NewSendHTTPRequest(ctx, DefaultBaseURL, "v1", "pn", payload, tp)
 	if err == nil || !strings.Contains(err.Error(), "token:") {
 		t.Fatalf("expected token error, got %v", err)
 	}
