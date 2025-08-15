@@ -47,7 +47,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 		sig := r.Header.Get("X-Hub-Signature-256")
 		if err := h.Service.VerifySignature(ctx, raw, sig); err != nil {
-			log.Printf("invalid signature")
+			log.Printf("invalid signature: %s - %s", raw, sig)
 			http.Error(w, "invalid signature", http.StatusForbidden)
 			return
 		}
