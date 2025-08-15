@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"regexp"
 
 	"github.com/diegoyosiura/whatsapp-sdk-go/pkg/errorsx"
 	"github.com/diegoyosiura/whatsapp-sdk-go/pkg/utils"
@@ -43,6 +44,7 @@ func (s *SendMessage) Buffer() (*bytes.Buffer, error) {
 }
 
 func (s *SendMessage) Validate() error {
+	s.To = regexp.MustCompile("[^0-9]").ReplaceAllString(s.To, "")
 	if s.To == "" {
 		return &errorsx.ValidationError{Op: "SendMessage", Field: "to", Reason: "empty"}
 	}
