@@ -4,10 +4,11 @@ func IsE164(s string) bool {
 	if len(s) < 4 || len(s) > 17 {
 		return false
 	}
+	start := 1
 	if s[0] != '+' {
-		return false
+		start = 0
 	}
-	for i := 1; i < len(s); i++ {
+	for i := start; i < len(s); i++ {
 		if s[i] < '0' || s[i] > '9' {
 			return false
 		}
